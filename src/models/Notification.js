@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const NotificationSchema = new mongoose.Schema({
-  user: {
+  recipient: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -15,7 +15,7 @@ const NotificationSchema = new mongoose.Schema({
     enum: ['follow', 'like', 'comment', 'mention', 'post', 'system', 'new_post', 'post_like'],
     required: true
   },
-  message: {
+  content: {
     type: String,
     required: true
   },
@@ -39,10 +39,9 @@ const NotificationSchema = new mongoose.Schema({
     type: Number,
     default: 50
   },
-  metadata: {
-    // Additional data related to the notification
-    type: mongoose.Schema.Types.Mixed,
-    default: {}
+  __v: {
+    type: Number,
+    default: 0
   },
   createdAt: {
     type: Date,
@@ -51,7 +50,7 @@ const NotificationSchema = new mongoose.Schema({
 });
 
 // Index for efficient querying of user notifications
-NotificationSchema.index({ user: 1, createdAt: -1 });
-NotificationSchema.index({ user: 1, isRead: 1, createdAt: -1 });
+NotificationSchema.index({ recipient: 1, createdAt: -1 });
+NotificationSchema.index({ recipient: 1, isRead: 1, createdAt: -1 });
 
 module.exports = mongoose.model('Notification', NotificationSchema); 

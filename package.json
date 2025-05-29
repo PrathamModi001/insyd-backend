@@ -4,8 +4,8 @@
   "description": "API service for Insyd notification system",
   "main": "src/index.js",
   "scripts": {
-    "start": "npm start",
-    "dev": "npm run dev",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "test": "npm test"
   },
   "dependencies": {

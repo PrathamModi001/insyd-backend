@@ -12,6 +12,20 @@ exports.getUserNotifications = async (req, res) => {
     // In a real app, we'd get the user ID from authenticated user
     // For this POC, we'll use a query param
     const userId = req.query.userId;
+    
+    console.log(`Fetching notifications for user: ${userId}`);
+    
+    if (!userId) {
+      return res.status(400).json({ 
+        message: 'userId is required as a query parameter',
+        notifications: [],
+        unreadCount: 0,
+        total: 0,
+        limit: 20,
+        offset: 0
+      });
+    }
+    
     const { limit = 20, offset = 0, read, type, since } = req.query;
     
     // Build query
@@ -54,6 +68,8 @@ exports.getUserNotifications = async (req, res) => {
       .skip(Number(offset))
       .sort({ createdAt: -1 });
       
+    console.log(`Found ${notifications.length} notifications`);
+    
     // Get unread count
     const unreadCount = await Notification.countDocuments({ 
       recipient: userId, 
@@ -62,6 +78,8 @@ exports.getUserNotifications = async (req, res) => {
     
     // Get total count for pagination
     const total = await Notification.countDocuments(query);
+    
+    console.log(`Total: ${total}, Unread: ${unreadCount}`);
     
     res.json({
       notifications,
@@ -72,7 +90,15 @@ exports.getUserNotifications = async (req, res) => {
     });
   } catch (error) {
     console.error(`Error getting notifications: ${error.message}`);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ 
+      message: 'Server error',
+      error: error.message,
+      notifications: [],
+      unreadCount: 0,
+      total: 0,
+      limit: 20,
+      offset: 0
+    });
   }
 };
 
