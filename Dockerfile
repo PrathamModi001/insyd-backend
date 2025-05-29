@@ -1,5 +1,5 @@
 # Use Node.js LTS as base image
-FROM node:18-alpine
+FROM node:18-slim
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -7,8 +7,8 @@ WORKDIR /usr/src/app
 # Copy package files for dependency installation
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies with more verbose output and fallback to regular install
+RUN npm install --verbose
 
 # Copy app source code
 COPY . .
