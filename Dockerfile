@@ -1,14 +1,22 @@
 # Use Node.js LTS as base image
-FROM node:18-slim
+FROM node:18
 
 # Create app directory
 WORKDIR /usr/src/app
 
+# Install build dependencies for native modules (especially for node-rdkafka)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    python3 \
+    librdkafka-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy package files for dependency installation
 COPY package*.json ./
 
-# Install dependencies with more verbose output and fallback to regular install
-RUN npm install --verbose
+# Install dependencies
+RUN npm install
 
 # Copy app source code
 COPY . .
