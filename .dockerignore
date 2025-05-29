@@ -1,0 +1,42 @@
+# Node modules and dependencies
+node_modules
+npm-debug.log
+
+# Git and version control
+.git
+.gitignore
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Development and test files
+*.test.js
+*.spec.js
+coverage
+
+# Documentation
+README.md
+docs
+*.md
+
+# Logs
+logs
+*.log
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Docker related
+Dockerfile
+.dockerignore
+
+# Editor directories and files
+.idea
+.vscode
+*.swp
+*.swo 
