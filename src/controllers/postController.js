@@ -9,13 +9,24 @@ const { sendEvent } = require('../utils/aiven-kafka');
  */
 exports.createPost = async (req, res) => {
   try {
+    console.log('Received post creation request:', req.body);
     const { title, content, tags, user } = req.body;
+
+    if (!user) {
+      console.error('User ID is missing in the request body');
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    console.log('Attempting to find user with ID:', user);
 
     // Validate user
     const userObj = await User.findById(user);
     if (!userObj) {
+      console.error(`User with ID ${user} not found`);
       return res.status(404).json({ message: 'User not found' });
     }
+
+    console.log(`Found user: ${userObj.username}`);
 
     // Create post
     const post = await Post.create({
@@ -24,6 +35,8 @@ exports.createPost = async (req, res) => {
       tags,
       user
     });
+
+    console.log(`Created post with ID: ${post._id}`);
 
     // Get populated post to return
     const populatedPost = await Post.findById(post._id).populate({
@@ -53,10 +66,12 @@ exports.createPost = async (req, res) => {
       }
     });
 
+    console.log('Post creation completed successfully');
     res.status(201).json(formattedPost);
   } catch (error) {
     console.error(`Error creating post: ${error.message}`);
-    res.status(500).json({ message: 'Server error' });
+    console.error(error.stack);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
